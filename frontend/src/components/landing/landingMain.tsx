@@ -16,7 +16,9 @@ export const LandingMain = () => {
         </p>
         <Button>Get started</Button>
       </div>
+
       {/* Image section */}
+      {/* TODO: Here image section is pending */}
     </div>
   );
 };
