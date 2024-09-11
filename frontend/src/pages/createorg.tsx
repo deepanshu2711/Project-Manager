@@ -7,18 +7,39 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { FileUp } from "lucide-react";
+import { handleImageUpload } from "@/util/uploadImage";
+import { FileUp, LoaderCircle } from "lucide-react";
 import { useRef, useState } from "react";
 
 export const CreateOrg = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
 
   const handleFileClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const SelectedFile = event.target.files?.[0];
+    if (SelectedFile) {
+      setUploading(true);
+      const result = await handleImageUpload(SelectedFile);
+      if (result.success) {
+        setImageUrl(result.downloadUrl as string);
+      }
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    console.log(name, description, imageUrl);
   };
 
   return (
@@ -35,14 +56,29 @@ export const CreateOrg = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="flex flex-col gap-5">
-            <Input ref={fileInputRef} type="file" hidden className="hidden" />
-            <div
-              onClick={handleFileClick}
-              className="flex flex-col p-[40px] group hover:border-orange-300 cursor-pointer rounded-lg items-center border justify-center"
-            >
-              <FileUp className="h-20 w-20 text-gray-500 group-hover:text-orange-500" />
-            </div>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            {uploading ? (
+              <LoaderCircle className="animate-spin h-[50px] w-[50px] m-[75px] self-center" />
+            ) : imageUrl ? (
+              <img
+                src={imageUrl}
+                className=" h-[150px] w-[150px] md:h-[200px] md:w-[200px] rounded-lg self-center"
+              />
+            ) : (
+              <div
+                onClick={handleFileClick}
+                className="flex flex-col p-[40px] group hover:border-orange-300 cursor-pointer rounded-lg items-center border justify-center"
+              >
+                <FileUp className="h-20 w-20 text-gray-500 group-hover:text-orange-500" />
+              </div>
+            )}
+            <Input
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              type="file"
+              hidden
+              className="hidden"
+            />
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
