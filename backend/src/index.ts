@@ -3,7 +3,11 @@ import { authRouter } from "./routes/user";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+import { MongoDb } from "./db";
 dotenv.config();
+
+MongoDb();
+
 const app = express();
 
 app.use(
