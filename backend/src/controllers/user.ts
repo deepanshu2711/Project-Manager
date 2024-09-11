@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 export const signInController = async (req: Request, res: Response) => {
   const { email, password } = req.body;
+
   if (!email) {
     return res.json("email is required").status(200);
   }
@@ -26,7 +27,7 @@ export const signInController = async (req: Request, res: Response) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string);
     res.cookie("token", token);
-    res.json({ message: "Logged in sucessfully!", user: user }).status(201);
+    return res.status(201).json({ message: "Logged in successfully!", user });
   } catch (error) {
     console.log(error);
     return res.json("Something went wrong please try again later").status(500);
