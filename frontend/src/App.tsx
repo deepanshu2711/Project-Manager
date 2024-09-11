@@ -1,10 +1,12 @@
-import { Button } from "./components/ui/button";
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Landing } from "./components/landing/landing";
 function App() {
   return (
-    <div>
-      <Button>Get started</Button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
