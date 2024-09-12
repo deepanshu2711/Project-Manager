@@ -5,6 +5,8 @@ import { SignUp } from "./pages/signup";
 import { Dashboard } from "./pages/dashboard";
 import { CreateOrg } from "./pages/createorg";
 import { UserProvider } from "./providers/userProvider";
+import { MainLayout } from "./components/MainLayout/mainLayout";
+import { OrgDashboard } from "./pages/orgDashbaord";
 function App() {
   return (
     <UserProvider>
@@ -13,8 +15,23 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="createorg" element={<CreateOrg />} />
+          <Route
+            path="/dashboard"
+            element={
+              <MainLayout>
+                <Dashboard />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/org/:orgId"
+            element={
+              <MainLayout>
+                <OrgDashboard />
+              </MainLayout>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </UserProvider>

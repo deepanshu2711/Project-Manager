@@ -26,3 +26,20 @@ export const createOrg = async (req: Request, res: Response) => {
     return res.status(500).json("Something went wrong please try again later");
   }
 };
+
+export const getOrgDetails = async (req: Request, res: Response) => {
+  const { orgId } = req.params;
+  console.log(orgId);
+  try {
+    const org = await Organization.findById({ _id: orgId });
+
+    if (!orgId) {
+      return res.status(404).json("Org does not exists");
+    }
+
+    return res.json(org).status(200);
+  } catch (error) {
+    console.log(error);
+    return res.json("Something went wrong please try again later").status(500);
+  }
+};

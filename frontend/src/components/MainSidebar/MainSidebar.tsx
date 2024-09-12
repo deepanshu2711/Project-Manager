@@ -35,7 +35,7 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
         </Tooltip>
       </TooltipProvider>
 
-      <div className=" flex flex-1 flex-col items-center gap-4 ">
+      <div className=" flex flex-1 flex-col items-center  gap-4 ">
         {userOrgs &&
           userOrgs.length > 0 &&
           userOrgs.map((org) => (
@@ -50,7 +50,7 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
                       alt={org.name}
                     />
                   </TooltipTrigger>
-                  <TooltipContent side="right">
+                  <TooltipContent side="right" className="">
                     <p>{org.name}</p>
                   </TooltipContent>
                 </Tooltip>
@@ -78,11 +78,11 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger>
-              <div className="p-3 bg-gray-100 cursor-pointer border-2 border-gray-100  hover:text-white hover:bg-orange-500 rounded-full">
+              <div className="p-3 bg-gray-100 cursor-pointer border-2 border-gray-100  hover:text-white hover:bg-gray-300 rounded-full">
                 <LogOut />
               </div>
             </TooltipTrigger>
-            <TooltipContent side="right">
+            <TooltipContent side="right" className="bg-white border text-black">
               <p>Log Out</p>
             </TooltipContent>
           </Tooltip>
