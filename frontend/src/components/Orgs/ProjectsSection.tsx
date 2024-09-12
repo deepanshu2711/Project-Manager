@@ -59,6 +59,18 @@ export const ProjectsSection = () => {
         <ProjectCard />
         <ProjectCard />
       </div>
+      {/* <div className="flex items-center justify-center mt-10"> */}
+      {/*   <div className="flex items-center gap-10"> */}
+      {/*     <img src="/empty.svg" className="h-[200px] w-[200px]" /> */}
+      {/*     <div className=" flex flex-col gap-1 max-w-[500px]"> */}
+      {/*       <p className="text-xl text-orange-500 font-semibold">Empty</p> */}
+      {/*       <p className="text-[14px] font-semibold text-gray-400"> */}
+      {/*         You don't have any project in your organization please add at */}
+      {/*         least one project to get started */}
+      {/*       </p> */}
+      {/*     </div> */}
+      {/*   </div> */}
+      {/* </div> */}
     </div>
   );
 };
