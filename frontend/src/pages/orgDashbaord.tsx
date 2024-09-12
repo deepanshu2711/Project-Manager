@@ -1,3 +1,4 @@
+import { ProjectsSection } from "@/components/Orgs/ProjectsSection";
 import { Button } from "@/components/ui/button";
 import { Organization } from "@/types";
 import axios from "axios";
@@ -64,6 +65,7 @@ export const OrgDashboard = () => {
           </p>
         </div>
       </div>
+      <ProjectsSection />
     </div>
   );
 };
