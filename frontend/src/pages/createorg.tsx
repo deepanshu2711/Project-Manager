@@ -12,7 +12,7 @@ import { useUser } from "@/providers/userProvider";
 import { handleImageUpload } from "@/util/uploadImage";
 import axios from "axios";
 import { FileUp, LoaderCircle } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const CreateOrg = () => {
@@ -25,6 +25,12 @@ export const CreateOrg = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { user } = useUser();
+
+  useEffect(() => {
+    if ((user?.orgs.length as number) > 0) {
+      return navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleFileClick = () => {
     if (fileInputRef.current) {
