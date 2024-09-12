@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
 import axios from "axios";
+import { useUser } from "@/providers/userProvider";
 
 export const SignIn = () => {
   const [email, setEmail] = useState<string>("");
@@ -19,7 +20,7 @@ export const SignIn = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
-
+  const { setUser } = useUser();
   async function handleClick(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -37,7 +38,8 @@ export const SignIn = () => {
       );
 
       if (res.status == 201) {
-        navigate("/dashboard");
+        navigate("/createorg");
+        setUser(res.data.user);
       } else {
         setError(res.data);
       }

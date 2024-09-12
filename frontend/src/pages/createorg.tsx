@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useUser } from "@/providers/userProvider";
 import { handleImageUpload } from "@/util/uploadImage";
 import axios from "axios";
 import { FileUp, LoaderCircle } from "lucide-react";
@@ -23,6 +24,7 @@ export const CreateOrg = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { user } = useUser();
 
   const handleFileClick = () => {
     if (fileInputRef.current) {
@@ -55,7 +57,7 @@ export const CreateOrg = () => {
           name,
           description,
           imageUrl,
-          userId: "66e29d3e59c2ac2156db53f2",
+          userId: user?._id,
         },
       );
 
@@ -78,6 +80,7 @@ export const CreateOrg = () => {
         <CardHeader>
           <CardTitle className="text-orange-500 text-lg">
             Create Organization
+            {user?.name}
           </CardTitle>
           <CardDescription>
             Establish a new organization to start managing projects, teams, and
