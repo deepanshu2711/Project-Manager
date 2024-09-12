@@ -26,18 +26,3 @@ export const createOrg = async (req: Request, res: Response) => {
     return res.status(500).json("Something went wrong please try again later");
   }
 };
-
-// export const getUserOrgs = async (req: Request, res: Response) => {
-//   const { userId } = req.params;
-//
-//   if (!userId) {
-//     return res.status(200).json("userId is required");
-//   }
-//
-//   try {
-//     const user = await User.findById({ _id: userId });
-//     return res.json
-//   } catch (error) {
-//     console.log("Something went wrong please try again later");
-//   }
-// };

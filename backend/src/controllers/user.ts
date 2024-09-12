@@ -14,7 +14,7 @@ export const signInController = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).populate("orgs");
     if (!user) {
       return res.json("No user found!").status(200);
     }
