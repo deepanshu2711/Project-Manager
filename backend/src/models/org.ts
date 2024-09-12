@@ -1,22 +1,22 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const OrgSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
     },
-    email: {
+    description: {
       type: String,
       required: true,
     },
-    password: {
+    imageUrl: {
       type: String,
       required: true,
     },
-    avatar: {
-      type: String,
-      required: true,
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
   },
   {
@@ -24,4 +24,4 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-export const User = mongoose.model("User", userSchema);
+export const Organization = mongoose.model("Organization", OrgSchema);

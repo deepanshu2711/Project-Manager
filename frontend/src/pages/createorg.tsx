@@ -3,13 +3,16 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { handleImageUpload } from "@/util/uploadImage";
+import axios from "axios";
 import { FileUp, LoaderCircle } from "lucide-react";
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const CreateOrg = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -17,6 +20,9 @@ export const CreateOrg = () => {
   const [description, setDescription] = useState<string>("");
   const [imageUrl, setImageUrl] = useState<string>("");
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleFileClick = () => {
     if (fileInputRef.current) {
@@ -38,8 +44,32 @@ export const CreateOrg = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log(name, description, imageUrl);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const responce = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/org/create`,
+        {
+          name,
+          description,
+          imageUrl,
+          userId: "66e29d3e59c2ac2156db53f2",
+        },
+      );
+
+      if (responce.status === 201) {
+        navigate("/dashboard");
+      } else {
+        setError(responce.data);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Something went wrong please try again later");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -94,9 +124,12 @@ export const CreateOrg = () => {
               required
             />
             <Button type="submit" className="uppercase">
-              Create
+              {loading ? <LoaderCircle className="animate-spin" /> : "Create"}
             </Button>
           </form>
+          <CardFooter>
+            <p className="text-red-500 font-semibold">{error}</p>
+          </CardFooter>
         </CardContent>
       </Card>
     </div>

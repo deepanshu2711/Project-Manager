@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import { MongoDb } from "./db";
+import { orgRouter } from "./routes/org";
 dotenv.config();
 
 MongoDb();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use("/api/auth", authRouter);
+app.use("/api/org", orgRouter);
 
 app.listen(8080, () => {
   console.log("server runnig on port 8080");
