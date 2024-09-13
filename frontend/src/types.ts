@@ -12,6 +12,8 @@ export type Organization = {
   description: string;
   imageUrl: string;
   userId: string;
+  members: User[];
+  projects: Project[];
 };
 
 export type Project = {

@@ -30,7 +30,9 @@ export const createOrg = async (req: Request, res: Response) => {
 export const getOrgDetails = async (req: Request, res: Response) => {
   const { orgId } = req.params;
   try {
-    const org = await Organization.findById({ _id: orgId });
+    const org = await Organization.findById({ _id: orgId })
+      .populate("projects")
+      .populate("members");
 
     if (!orgId) {
       return res.status(404).json("Org does not exists");
