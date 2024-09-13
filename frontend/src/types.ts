@@ -13,3 +13,17 @@ export type Organization = {
   imageUrl: string;
   userId: string;
 };
+
+export type Project = {
+  _id: string;
+  name: string;
+  description: string;
+  org: string;
+  tasks: task[];
+};
+
+export type task = {
+  name: string;
+  completed: boolean;
+  assignedTo: string;
+};
