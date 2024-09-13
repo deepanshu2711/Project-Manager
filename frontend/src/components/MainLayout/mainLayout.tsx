@@ -7,7 +7,7 @@ export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="flex items-start">
       <MainSidebar userOrgs={user?.orgs} user={user} />
-      <div className="ml-[10vh] flex-1">{children}</div>
+      <div className="md:ml-[10vh] flex-1">{children}</div>
     </div>
   );
 };

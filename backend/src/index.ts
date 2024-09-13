@@ -5,6 +5,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { MongoDb } from "./db";
 import { orgRouter } from "./routes/org";
+import { projectRouter } from "./routes/project";
 dotenv.config();
 
 MongoDb();
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/org", orgRouter);
+app.use("/api/project", projectRouter);
 
 app.listen(8080, () => {
   console.log("server runnig on port 8080");

@@ -17,7 +17,7 @@ interface MainSidebarProps {
 export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
   console.log(userOrgs);
   return (
-    <div className="fixed top-0 bottom-0 left-0 h-screen border p-2 flex flex-col gap-5 ">
+    <div className="fixed md:flex hidden top-0 bottom-0 left-0 h-screen border p-2  flex-col gap-5 ">
       <Link to={"/"} className="flex items-center justify-center mt-2">
         <SiTicktick className="text-orange-500 h-10 w-10  self-center" />
       </Link>
