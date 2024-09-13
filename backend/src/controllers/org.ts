@@ -29,7 +29,6 @@ export const createOrg = async (req: Request, res: Response) => {
 
 export const getOrgDetails = async (req: Request, res: Response) => {
   const { orgId } = req.params;
-  console.log(orgId);
   try {
     const org = await Organization.findById({ _id: orgId });
 
@@ -41,5 +40,38 @@ export const getOrgDetails = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
     return res.json("Something went wrong please try again later").status(500);
+  }
+};
+
+export const AddMembers = async (req: Request, res: Response) => {
+  const { members, orgId } = req.body;
+  if (!members || !orgId) {
+    return res.status(400).json("Missing information");
+  }
+
+  try {
+    if (members.length === 0) {
+      return res.status(200).json("No valid email addresses provided");
+    }
+
+    const users = await User.find({ email: { $in: members } });
+    if (users?.length === 0) {
+      return res
+        .status(200)
+        .json("No users found with the provided email addresses");
+    }
+    const userIds = users.map((user) => user._id);
+
+    await Organization.findOneAndUpdate(
+      { _id: orgId },
+      { $addToSet: { members: { $each: userIds } } },
+    );
+
+    return res
+      .status(201)
+      .json(`${userIds.length} members added to Organization`);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Something went wrong please try again later");
   }
 };

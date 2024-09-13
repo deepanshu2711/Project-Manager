@@ -3,13 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Organization } from "@/types";
 import axios from "axios";
 import { Dot } from "lucide-react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 export const OrgDashboard = () => {
+  const [emails, setEmails] = useState<string>("");
   const params = useParams();
   const [orgDetails, setOrgDetails] = useState<Organization | null>(null);
-
+  const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
   useEffect(() => {
     const fetchOrgdetails = async () => {
       const responce = await axios.get(
@@ -22,7 +32,24 @@ export const OrgDashboard = () => {
     fetchOrgdetails();
   }, [params.orgId]);
 
-  console.log("OrgDetails:", orgDetails);
+  async function handleAddMembers(e: React.FormEvent) {
+    e.preventDefault();
+    const allEmails = emails.split(/[\s,;]+/).map((email) => email.trim());
+    try {
+      const responce = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/org/addMembers`,
+        {
+          orgId: params.orgId,
+          members: allEmails,
+        },
+      );
+      if (responce.status === 200) {
+        console.log(responce.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="flex flex-col ">
@@ -34,7 +61,41 @@ export const OrgDashboard = () => {
         />
       </div>
       <div className="md:flex hidden  items-end justify-end p-5">
-        <Button className="self-end">Edit Organization Details</Button>
+        <Dialog
+          open={openAddMembers}
+          onOpenChange={() => setOpenAddMembers(!openAddMembers)}
+        >
+          <DialogTrigger asChild>
+            <Button
+              variant={"default"}
+              className="self-end"
+              onClick={() => setOpenAddMembers(true)}
+            >
+              Add Members
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add members to your Organization</DialogTitle>
+              <DialogDescription>
+                Enter the email addresses of the members you want to add,
+                separated by commas and spaces.
+                <br />
+                <span>Example: email1@example.com, email2@example.com</span>
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleAddMembers} className="flex flex-col gap-5">
+              <Textarea
+                rows={8}
+                value={emails}
+                onChange={(e) => setEmails(e.target.value)}
+              />
+              <Button type="submit" className="uppercase w-full">
+                Add
+              </Button>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="md:hidden flex  items-end justify-end p-5">
         <Button className="self-end">Edit</Button>

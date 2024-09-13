@@ -36,7 +36,7 @@ export const ProjectsSection = () => {
         </p>
         <div className="flex items-center gap-5">
           <Select>
-            <SelectTrigger className="w-full flex-1">
+            <SelectTrigger className="w-full  flex-1">
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent className="flex-1">
