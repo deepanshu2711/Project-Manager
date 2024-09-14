@@ -21,6 +21,7 @@ export type Project = {
   name: string;
   description: string;
   org: string;
+  progress: number;
   tasks: task[];
 };
 

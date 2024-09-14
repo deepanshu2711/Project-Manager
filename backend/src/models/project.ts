@@ -12,6 +12,10 @@ const projectSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Organization",
   },
+  progress: {
+    type: Number,
+    default: 0,
+  },
   tasks: [
     {
       type: mongoose.Schema.Types.ObjectId,
