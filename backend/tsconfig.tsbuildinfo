@@ -1,1 +1,1 @@
-{"root":["./src/db.ts","./src/index.ts","./src/controllers/org.ts","./src/controllers/user.ts","./src/models/org.ts","./src/models/project.ts","./src/models/task.ts","./src/models/user.ts","./src/routes/org.ts","./src/routes/user.ts"],"version":"5.6.2"}
+{"root":["./src/db.ts","./src/index.ts","./src/controllers/org.ts","./src/controllers/project.ts","./src/controllers/user.ts","./src/models/org.ts","./src/models/project.ts","./src/models/task.ts","./src/models/user.ts","./src/routes/org.ts","./src/routes/project.ts","./src/routes/user.ts"],"version":"5.6.2"}

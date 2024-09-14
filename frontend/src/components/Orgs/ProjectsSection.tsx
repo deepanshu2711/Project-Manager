@@ -19,20 +19,46 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import axios from "axios";
 
-export const ProjectsSection = () => {
+interface ProjectsSectionProps {
+  orgId: string;
+  projects: Project[] | undefined;
+}
+
+export const ProjectsSection = ({ orgId, projects }: ProjectsSectionProps) => {
   const [activetab, setActivetab] = useState<"Projects" | "Members">(
     "Projects",
   );
 
   const [members, setMembers] = useState<User[]>([]);
-  const [projects, setProjects] = useState<Project[]>([]);
   const [openAddNewProject, setOpenAddNewProject] = useState<boolean>(false);
   const [projectName, setProjectName] = useState<string>("");
   const [projectDesc, setProjectDesc] = useState<string>("");
 
-  const handleCreateProject = () => {
-    console.log(projectDesc, projectName);
+  const handleCreateProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(projectDesc, projectName, orgId);
+    try {
+      const responce = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/project/create`,
+        {
+          name: projectName,
+          description: projectDesc,
+          orgId,
+        },
+      );
+
+      if (responce.status === 201) {
+        console.log(responce.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setOpenAddNewProject(false);
+      setProjectName("");
+      setProjectDesc("");
+    }
   };
 
   return (
@@ -178,7 +204,7 @@ export const ProjectsSection = () => {
             </div>
             <div className="flex md:hidden flex-col gap-4">
               <p className="text-xl text-gray-600 font-semibold">
-                All <span className="text-orange-500">Projects</span>
+                All <span className="text-orange-500">Members</span>
               </p>
               <div className="flex items-center gap-5">
                 <Select>
@@ -202,7 +228,7 @@ export const ProjectsSection = () => {
             </div>
           </>
         )}
-        {activetab === "Projects" && projects.length > 0 && (
+        {activetab === "Projects" && (projects?.length as number) > 0 && (
           <div className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-5 mt-10">
             <ProjectCard />
             <ProjectCard />
@@ -214,7 +240,7 @@ export const ProjectsSection = () => {
         )}
       </div>
 
-      {activetab === "Projects" && projects.length === 0 && (
+      {activetab === "Projects" && projects?.length === 0 && (
         <div className="flex items-center justify-center mt-10 h-[50vh]">
           <div className="flex items-center gap-10">
             <img

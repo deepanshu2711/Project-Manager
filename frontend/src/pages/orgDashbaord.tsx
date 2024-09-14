@@ -1,6 +1,6 @@
 import { ProjectsSection } from "@/components/Orgs/ProjectsSection";
 import { Button } from "@/components/ui/button";
-import { Organization } from "@/types";
+import { Organization, Project } from "@/types";
 import axios from "axios";
 import { Dot } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -20,6 +20,7 @@ export const OrgDashboard = () => {
   const params = useParams();
   const [orgDetails, setOrgDetails] = useState<Organization | null>(null);
   const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
+  const [orgId, setOrgId] = useState<string>("");
   useEffect(() => {
     const fetchOrgdetails = async () => {
       const responce = await axios.get(
@@ -27,9 +28,16 @@ export const OrgDashboard = () => {
       );
       if (responce.status === 200) {
         setOrgDetails(responce.data);
+        console.log(responce.data);
       }
     };
     fetchOrgdetails();
+  }, [params.orgId]);
+
+  useEffect(() => {
+    if (params.orgId) {
+      setOrgId(params.orgId);
+    }
   }, [params.orgId]);
 
   async function handleAddMembers(e: React.FormEvent) {
@@ -123,7 +131,7 @@ export const OrgDashboard = () => {
           </p>
         </div>
       </div>
-      <ProjectsSection />
+      <ProjectsSection orgId={orgId} projects={orgDetails?.projects} />
     </div>
   );
 };
