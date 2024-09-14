@@ -19,19 +19,34 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import axios from "axios";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Dice1, UserRoundX } from "lucide-react";
 
 interface ProjectsSectionProps {
   orgId: string;
   projects: Project[] | undefined;
+  members: User[] | undefined;
 }
 
-export const ProjectsSection = ({ orgId, projects }: ProjectsSectionProps) => {
+export const ProjectsSection = ({
+  orgId,
+  projects,
+  members,
+}: ProjectsSectionProps) => {
   const [activetab, setActivetab] = useState<"Projects" | "Members">(
     "Projects",
   );
 
-  const [members, setMembers] = useState<User[]>([]);
   const [openAddNewProject, setOpenAddNewProject] = useState<boolean>(false);
   const [projectName, setProjectName] = useState<string>("");
   const [projectDesc, setProjectDesc] = useState<string>("");
@@ -230,12 +245,13 @@ export const ProjectsSection = ({ orgId, projects }: ProjectsSectionProps) => {
         )}
         {activetab === "Projects" && (projects?.length as number) > 0 && (
           <div className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-5 mt-10">
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
-            <ProjectCard />
+            {projects?.map((project) => (
+              <ProjectCard
+                projectId={project._id}
+                name={project.name}
+                orgId={orgId}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -257,23 +273,60 @@ export const ProjectsSection = ({ orgId, projects }: ProjectsSectionProps) => {
           </div>
         </div>
       )}
-      {activetab === "Members" && members.length === 0 && (
-        <div className="flex items-center justify-center mt-10 h-[50vh]">
-          <div className="flex items-center gap-10">
-            <img
-              src="/empty.svg"
-              className="md:h-[300px] md:w-[300px] h-[100px] w-[100px]"
-            />
-            <div className=" flex flex-col gap-1 max-w-[500px]">
-              <p className="text-xl text-orange-500 font-semibold">
-                No Members
-              </p>
-              <p className="text-[14px] md:block hidden font-semibold text-gray-400">
-                You don't have any members in your organization. Please invite
-                members to get started.
-              </p>
-            </div>
-          </div>
+      {/* {activetab === "Members" && members.length === 0 && ( */}
+      {/*   <div className="flex items-center justify-center mt-10 h-[50vh]"> */}
+      {/*     <div className="flex items-center gap-10"> */}
+      {/*       <img */}
+      {/*         src="/empty.svg" */}
+      {/*         className="md:h-[300px] md:w-[300px] h-[100px] w-[100px]" */}
+      {/*       /> */}
+      {/*       <div className=" flex flex-col gap-1 max-w-[500px]"> */}
+      {/*         <p className="text-xl text-orange-500 font-semibold"> */}
+      {/*           No Members */}
+      {/*         </p> */}
+      {/*         <p className="text-[14px] md:block hidden font-semibold text-gray-400"> */}
+      {/*           You don't have any members in your organization. Please invite */}
+      {/*           members to get started. */}
+      {/*         </p> */}
+      {/*       </div> */}
+      {/*     </div> */}
+      {/*   </div> */}
+      {/* )} */}
+
+      {activetab === "Members" && members && members?.length > 0 && (
+        <div className=" mt-10">
+          <Table>
+            <TableCaption>
+              A list of all members in your organization
+            </TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[100px]">Id</TableHead>
+                <TableHead className="w-[100px]">Avatar</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead className="text-right">Action</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {members.map((member, idx) => (
+                <TableRow>
+                  <TableCell className="font-medium">{idx + 1}</TableCell>
+                  <TableCell className="font-medium">
+                    <Avatar>
+                      <AvatarImage src={member.avatar} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell>{member.name}</TableCell>
+                  <TableCell>{member.email}</TableCell>
+                  <TableCell className="flex items-end justify-end">
+                    <UserRoundX className="cursor-pointer  h-7 w-7  hover:text-orange-500" />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
     </div>

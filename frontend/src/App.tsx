@@ -7,6 +7,7 @@ import { CreateOrg } from "./pages/createorg";
 import { UserProvider } from "./providers/userProvider";
 import { MainLayout } from "./components/MainLayout/mainLayout";
 import { OrgDashboard } from "./pages/orgDashbaord";
+import { ProjectDashboard } from "./components/Orgs/Project/projectDashboard";
 function App() {
   return (
     <UserProvider>
@@ -29,6 +30,14 @@ function App() {
             element={
               <MainLayout>
                 <OrgDashboard />
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/org/:orgId/project/:projectId"
+            element={
+              <MainLayout>
+                <ProjectDashboard />
               </MainLayout>
             }
           />
