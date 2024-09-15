@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "../ui/button";
 import { ProjectCard } from "./ProjectCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Project, User } from "@/types";
 import {
   Dialog,
@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/table";
 import axios from "axios";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dice1, UserRoundX } from "lucide-react";
+import { LoaderCircle, UserRoundX } from "lucide-react";
 
 interface ProjectsSectionProps {
   orgId: string;
@@ -50,10 +50,18 @@ export const ProjectsSection = ({
   const [openAddNewProject, setOpenAddNewProject] = useState<boolean>(false);
   const [projectName, setProjectName] = useState<string>("");
   const [projectDesc, setProjectDesc] = useState<string>("");
+  const [creatingProject, setCreatingProject] = useState<boolean>(false);
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+
+  useEffect(() => {
+    if (projects) {
+      setAllProjects(projects);
+    }
+  }, [projects]);
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(projectDesc, projectName, orgId);
+    setCreatingProject(true);
     try {
       const responce = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/project/create`,
@@ -66,15 +74,33 @@ export const ProjectsSection = ({
 
       if (responce.status === 201) {
         console.log(responce.data);
+        setAllProjects([...allProjects, responce.data]);
       }
     } catch (error) {
       console.log(error);
     } finally {
+      setCreatingProject(false);
       setOpenAddNewProject(false);
       setProjectName("");
       setProjectDesc("");
     }
   };
+
+  async function deleteProject(projectId: string) {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/project/delete?orgId=${orgId}&projectId=${projectId}`,
+      );
+
+      const FilteredProjects = allProjects.filter(
+        (project) => project._id !== projectId,
+      );
+
+      setAllProjects(FilteredProjects);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="mt-10 p-5 flex flex-col bg-zinc-50">
@@ -138,7 +164,7 @@ export const ProjectsSection = ({
                     className="self-end"
                     onClick={() => setOpenAddNewProject(true)}
                   >
-                    Add Project
+                    Add New Project
                   </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -165,7 +191,11 @@ export const ProjectsSection = ({
                       rows={5}
                     />
                     <Button type="submit" className="uppercase">
-                      Create
+                      {creatingProject ? (
+                        <LoaderCircle className="animate-spin" />
+                      ) : (
+                        "Create"
+                      )}
                     </Button>
                   </form>
                 </DialogContent>
@@ -243,10 +273,11 @@ export const ProjectsSection = ({
             </div>
           </>
         )}
-        {activetab === "Projects" && (projects?.length as number) > 0 && (
+        {activetab === "Projects" && (allProjects?.length as number) > 0 && (
           <div className="grid md:grid-cols-2 grid-cols-1 lg:grid-cols-3 gap-5 mt-10">
-            {projects?.map((project) => (
+            {allProjects?.map((project) => (
               <ProjectCard
+                handleDelete={deleteProject}
                 projectId={project._id}
                 name={project.name}
                 orgId={orgId}

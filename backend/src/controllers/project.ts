@@ -26,3 +26,22 @@ export const createProject = async (req: Request, res: Response) => {
     return res.status(500).json("Something went wrong please try again later");
   }
 };
+
+export const deleteProject = async (req: Request, res: Response) => {
+  const { projectId, orgId } = req.query;
+
+  try {
+    await Project.deleteOne({ _id: projectId });
+
+    await Organization.findOneAndUpdate(
+      { _id: orgId },
+      { $pull: { projects: projectId } },
+    );
+
+    res.status(200).json("Project deleted successfully");
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json("Something went wrong please try again later");
+  }
+};

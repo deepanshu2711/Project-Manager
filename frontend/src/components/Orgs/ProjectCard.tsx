@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dot, FolderRoot, Info, MoreVertical } from "lucide-react";
+import { FolderRoot, Info, MoreVertical, Trash } from "lucide-react";
 import { Progress } from "../ui/progress";
 import { Separator } from "../ui/separator";
 import { Link } from "react-router-dom";
@@ -15,13 +15,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ProjectCardProps {
   projectId: string;
   orgId: string;
   name: string;
+  handleDelete: (projectId: string) => void;
 }
-export const ProjectCard = ({ name, projectId, orgId }: ProjectCardProps) => {
+export const ProjectCard = ({
+  name,
+  projectId,
+  orgId,
+  handleDelete,
+}: ProjectCardProps) => {
   return (
     <Card>
       <CardHeader>
@@ -36,7 +48,22 @@ export const ProjectCard = ({ name, projectId, orgId }: ProjectCardProps) => {
                 </p>
               </div>
             </div>
-            <MoreVertical />
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <MoreVertical />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem
+                  onClick={() => handleDelete(projectId)}
+                  className="flex group items-center justify-between cursor-pointer"
+                >
+                  <Trash className="group-hover:text-rose-500" />
+                  <p className="font-semibold group-hover:text-rose-500">
+                    Delete
+                  </p>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </CardTitle>
       </CardHeader>
