@@ -58,3 +58,20 @@
     --chart-5: 340 75% 55%;
   }
 }
+
+/* For the entire scrollbar */
+::-webkit-scrollbar {
+  width: 12px; /* width of the scrollbar */
+  height: 12px; /* height of the scrollbar for horizontal scrolling */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cccccc; /* Light gray color */
+  border-radius: 6px; /* Rounded corners */
+}
+
+/* The track (background) of the scrollbar */
+::-webkit-scrollbar-track {
+  background: #ffffff; /* background color of the track */
+  border-radius: 6px;
+}

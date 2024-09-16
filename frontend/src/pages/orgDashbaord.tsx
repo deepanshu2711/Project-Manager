@@ -62,10 +62,11 @@ export const OrgDashboard = () => {
   return (
     <div className="flex flex-col ">
       <div className="relative -z-10">
-        <img
-          src={orgDetails?.imageUrl}
-          className="h-[40vh] w-[100%] object-cover"
-        />
+        {/* <img */}
+        {/*   src={orgDetails?.imageUrl} */}
+        {/*   className="h-[40vh] w-[100%] object-cover" */}
+        {/* /> */}
+        <div className="h-[40vh] bg-orange-400 w-[100%] object-cover" />
         <img
           src={orgDetails?.imageUrl}
           className=" h-[120px] w-[120px] md:h-[200px] md:w-[200px] absolute -bottom-[60px] md:-bottom-[100px] rounded-lg left-5 border-4 boeder-gray-600"
