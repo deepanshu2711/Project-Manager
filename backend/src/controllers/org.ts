@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Organization } from "../models/org";
 import { User } from "../models/user";
+import { Project } from "../models/project";
 
 export const createOrg = async (req: Request, res: Response) => {
   const { name, description, imageUrl, userId } = req.body;
@@ -88,6 +89,24 @@ export const removeMember = async (req: Request, res: Response) => {
       },
     );
     res.status(200).json("Member removed successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Something went wrong please try again later");
+  }
+};
+
+export const deleteOrg = async (req: Request, res: Response) => {
+  const { orgId } = req.params;
+
+  try {
+    await Organization.deleteOne({ _id: orgId });
+    await User.updateMany(
+      { orgs: { $in: [orgId] } },
+      { $pull: { orgs: orgId } },
+    );
+    await Project.deleteMany({ org: orgId });
+
+    res.status(200).json("Org deleted successfully");
   } catch (error) {
     console.log(error);
     res.status(500).json("Something went wrong please try again later");

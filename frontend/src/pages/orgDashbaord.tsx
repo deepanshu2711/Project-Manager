@@ -2,9 +2,9 @@ import { ProjectsSection } from "@/components/Orgs/ProjectsSection";
 import { Button } from "@/components/ui/button";
 import { Organization } from "@/types";
 import axios from "axios";
-import { Dot } from "lucide-react";
+import { Dot, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,10 @@ export const OrgDashboard = () => {
   const params = useParams();
   const [orgDetails, setOrgDetails] = useState<Organization | null>(null);
   const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [deleting, setDeleting] = useState<boolean>(false);
   const [orgId, setOrgId] = useState<string>("");
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchOrgdetails = async () => {
       const responce = await axios.get(
@@ -58,6 +61,23 @@ export const OrgDashboard = () => {
       console.log(error);
     }
   }
+
+  const handleDeleteOrg = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDeleting(true);
+    try {
+      const responce = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/org/delete/${orgId}`,
+      );
+      if (responce.status === 200) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="flex flex-col ">
@@ -108,13 +128,35 @@ export const OrgDashboard = () => {
             </form>
           </DialogContent>
         </Dialog>
-        <Button
-          variant={"destructive"}
-          className="self-end"
-          onClick={() => setOpenAddMembers(true)}
+        <Dialog
+          open={openDelete}
+          onOpenChange={() => setOpenDelete(!openDelete)}
         >
-          Delete
-        </Button>
+          <DialogTrigger asChild>
+            <Button
+              variant={"destructive"}
+              className="self-end"
+              onClick={() => setOpenDelete(true)}
+            >
+              Delete
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Organization</DialogTitle>
+              <DialogDescription>
+                This action cannot be undone. Once deleted, the organization and
+                its associated data will be permanently removed.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center gap-4 justify-end">
+              <Button onClick={handleDeleteOrg} variant={"outline"}>
+                {deleting ? <LoaderCircle className="animate-spin" /> : "ok"}
+              </Button>
+              <Button onClick={() => setOpenDelete(false)}>cancel</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
       <div className="md:hidden flex  items-end justify-end p-5">
         <Button className="self-end">Edit</Button>
