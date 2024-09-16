@@ -52,12 +52,17 @@ export const ProjectsSection = ({
   const [projectDesc, setProjectDesc] = useState<string>("");
   const [creatingProject, setCreatingProject] = useState<boolean>(false);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [allMembers, setAllMembers] = useState<User[]>([]);
 
   useEffect(() => {
     if (projects) {
       setAllProjects(projects);
     }
-  }, [projects]);
+
+    if (members) {
+      setAllMembers(members);
+    }
+  }, [projects, members]);
 
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,19 +93,37 @@ export const ProjectsSection = ({
 
   async function deleteProject(projectId: string) {
     try {
-      await axios.delete(
+      const responce = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/api/project/delete?orgId=${orgId}&projectId=${projectId}`,
       );
 
-      const FilteredProjects = allProjects.filter(
-        (project) => project._id !== projectId,
-      );
-
-      setAllProjects(FilteredProjects);
+      if (responce.status === 200) {
+        const FilteredProjects = allProjects.filter(
+          (project) => project._id !== projectId,
+        );
+        setAllProjects(FilteredProjects);
+      }
     } catch (error) {
       console.log(error);
     }
   }
+
+  const handleRemoveMember = async (memberId: string) => {
+    try {
+      const responce = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/org/removeMember?orgId=${orgId}&memberId=${memberId}`,
+      );
+
+      if (responce.status === 200) {
+        const filteredMembers = allMembers.filter(
+          (member) => member._id !== memberId,
+        );
+        setAllMembers(filteredMembers);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="mt-10 p-5 flex flex-col bg-zinc-50">
@@ -324,7 +347,7 @@ export const ProjectsSection = ({
       {/*   </div> */}
       {/* )} */}
 
-      {activetab === "Members" && members && members?.length > 0 && (
+      {activetab === "Members" && allMembers && allMembers?.length > 0 && (
         <div className=" mt-10">
           <Table>
             <TableCaption>
@@ -340,7 +363,7 @@ export const ProjectsSection = ({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {members.map((member, idx) => (
+              {allMembers.map((member, idx) => (
                 <TableRow>
                   <TableCell className="font-medium">{idx + 1}</TableCell>
                   <TableCell className="font-medium">
@@ -352,7 +375,10 @@ export const ProjectsSection = ({
                   <TableCell>{member.name}</TableCell>
                   <TableCell>{member.email}</TableCell>
                   <TableCell className="flex items-end justify-end">
-                    <UserRoundX className="cursor-pointer  h-7 w-7  hover:text-orange-500" />
+                    <UserRoundX
+                      onClick={() => handleRemoveMember(member._id)}
+                      className="cursor-pointer  h-7 w-7  hover:text-orange-500"
+                    />
                   </TableCell>
                 </TableRow>
               ))}

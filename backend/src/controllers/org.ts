@@ -77,3 +77,19 @@ export const AddMembers = async (req: Request, res: Response) => {
     return res.status(500).json("Something went wrong please try again later");
   }
 };
+
+export const removeMember = async (req: Request, res: Response) => {
+  const { memberId, orgId } = req.query;
+  try {
+    await Organization.findOneAndUpdate(
+      { _id: orgId },
+      {
+        $pull: { members: memberId },
+      },
+    );
+    res.status(200).json("Member removed successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Something went wrong please try again later");
+  }
+};
