@@ -1,6 +1,6 @@
 import { ProjectsSection } from "@/components/Orgs/ProjectsSection";
 import { Button } from "@/components/ui/button";
-import { Organization, Project } from "@/types";
+import { Organization } from "@/types";
 import axios from "axios";
 import { Dot } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -78,11 +78,11 @@ export const OrgDashboard = () => {
         >
           <DialogTrigger asChild>
             <Button
-              variant={"default"}
+              variant={"outline"}
               className="self-end"
               onClick={() => setOpenAddMembers(true)}
             >
-              Add Members
+              Edit
             </Button>
           </DialogTrigger>
           <DialogContent>
