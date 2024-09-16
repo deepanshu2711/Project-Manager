@@ -72,7 +72,7 @@ export const OrgDashboard = () => {
           className=" h-[120px] w-[120px] md:h-[200px] md:w-[200px] absolute -bottom-[60px] md:-bottom-[100px] rounded-lg left-5 border-4 boeder-gray-600"
         />
       </div>
-      <div className="md:flex hidden  items-end justify-end p-5">
+      <div className="md:flex hidden gap-4  items-end justify-end p-5">
         <Dialog
           open={openAddMembers}
           onOpenChange={() => setOpenAddMembers(!openAddMembers)}
@@ -108,6 +108,13 @@ export const OrgDashboard = () => {
             </form>
           </DialogContent>
         </Dialog>
+        <Button
+          variant={"destructive"}
+          className="self-end"
+          onClick={() => setOpenAddMembers(true)}
+        >
+          Delete
+        </Button>
       </div>
       <div className="md:hidden flex  items-end justify-end p-5">
         <Button className="self-end">Edit</Button>

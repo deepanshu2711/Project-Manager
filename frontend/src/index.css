@@ -59,19 +59,20 @@
   }
 }
 
-/* For the entire scrollbar */
+/* Hide scrollbar for WebKit browsers */
 ::-webkit-scrollbar {
-  width: 12px; /* width of the scrollbar */
-  height: 12px; /* height of the scrollbar for horizontal scrolling */
+  width: 0; /* Remove the scrollbar width */
+  height: 0; /* Remove the scrollbar height */
 }
 
+/* Hide the scrollbar thumb */
 ::-webkit-scrollbar-thumb {
-  background: #cccccc; /* Light gray color */
-  border-radius: 6px; /* Rounded corners */
+  background: transparent; /* Make the thumb invisible */
+  border-radius: 3px; /* Keep rounded corners if needed */
 }
 
-/* The track (background) of the scrollbar */
+/* Hide the scrollbar track */
 ::-webkit-scrollbar-track {
-  background: #ffffff; /* background color of the track */
-  border-radius: 6px;
+  background: transparent; /* Make the track invisible */
+  border-radius: 3px; /* Keep rounded corners if needed */
 }
