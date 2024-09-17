@@ -1,6 +1,17 @@
+import { useUser } from "@/providers/userProvider";
 import { Button } from "../ui/button";
+import { useNavigate } from "react-router-dom";
 
 export const LandingMain = () => {
+  const { user } = useUser();
+  const navigate = useNavigate();
+  const handleClick = () => {
+    if (user !== null) {
+      return navigate("/dashboard");
+    } else {
+      return navigate("/signin");
+    }
+  };
   return (
     <div>
       <div className="p-5 h-[80vh] flex flex-col items-center justify-center">
@@ -15,7 +26,7 @@ export const LandingMain = () => {
             existing organization or creating a new one, our platform empowers
             teams to collaborate seamlessly.
           </p>
-          <Button>Get started</Button>
+          <Button onClick={handleClick}>Get started</Button>
         </div>
 
         {/* Image section */}
