@@ -52,7 +52,7 @@ export const SignUp = () => {
         },
       );
 
-      if (res.status === 200 && res.data.message === "Sign up successfully!") {
+      if (res.status === 201) {
         navigate("/signin");
       } else {
         setError(res.data);

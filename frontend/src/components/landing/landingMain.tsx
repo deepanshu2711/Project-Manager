@@ -5,7 +5,7 @@ export const LandingMain = () => {
     <div>
       <div className="p-5 h-[80vh] flex flex-col items-center justify-center">
         <div className="flex flex-col gap-5 items-center">
-          <p className=" text-3xl font-bold">
+          <p className=" text-3xl md:text-5xl font-bold">
             Project Master: Streamline Your Team’s{" "}
             <span className="text-orange-500">Success</span>
           </p>
