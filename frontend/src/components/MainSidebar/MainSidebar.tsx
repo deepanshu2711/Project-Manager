@@ -28,8 +28,10 @@ import axios from "axios";
 import { handleImageUpload } from "@/util/uploadImage";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useDispatch } from "react-redux";
+import { addOrganization } from "@/redux/reducers/orgSlice";
 interface MainSidebarProps {
-  userOrgs: Organization[] | undefined;
+  userOrgs: Organization[] | null;
   user: User | null;
 }
 export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
@@ -43,6 +45,7 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
   const [error, setError] = useState("");
   const [openCreateOrg, setOpenCreateOrg] = useState<boolean>(false);
   const params = useParams();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleFileClick = () => {
     if (fileInputRef.current) {
@@ -81,6 +84,7 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
 
       if (responce.status === 201) {
         console.log(responce.data);
+        dispatch(addOrganization(responce.data.org));
       } else {
         setError(responce.data);
       }

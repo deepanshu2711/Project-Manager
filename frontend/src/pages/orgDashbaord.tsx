@@ -14,6 +14,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { useDispatch } from "react-redux";
+import { removeOrganization } from "@/redux/reducers/orgSlice";
 
 export const OrgDashboard = () => {
   const [emails, setEmails] = useState<string>("");
@@ -24,6 +26,7 @@ export const OrgDashboard = () => {
   const [deleting, setDeleting] = useState<boolean>(false);
   const [orgId, setOrgId] = useState<string>("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     const fetchOrgdetails = async () => {
       const responce = await axios.get(
@@ -71,6 +74,7 @@ export const OrgDashboard = () => {
       );
       if (responce.status === 200) {
         navigate("/dashboard");
+        dispatch(removeOrganization(orgId));
       }
     } catch (error) {
       console.log(error);

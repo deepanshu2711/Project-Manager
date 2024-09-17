@@ -9,10 +9,12 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useUser } from "@/providers/userProvider";
+import { addOrganization } from "@/redux/reducers/orgSlice";
 import { handleImageUpload } from "@/util/uploadImage";
 import axios from "axios";
 import { FileUp, LoaderCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export const CreateOrg = () => {
@@ -24,6 +26,7 @@ export const CreateOrg = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useUser();
 
   useEffect(() => {
@@ -69,6 +72,7 @@ export const CreateOrg = () => {
 
       if (responce.status === 201) {
         navigate("/dashboard");
+        dispatch(addOrganization(responce.data.org));
       } else {
         setError(responce.data);
       }

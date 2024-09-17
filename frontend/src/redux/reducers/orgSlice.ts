@@ -25,9 +25,9 @@ export const orgSlice = createSlice({
       }
     },
 
-    removeOrganization(state, action: PayloadAction<Organization>) {
+    removeOrganization(state, action: PayloadAction<string>) {
       if (state.org) {
-        state.org = state.org.filter((org) => org !== action.payload);
+        state.org = state.org.filter((org) => org._id !== action.payload);
       }
     },
 

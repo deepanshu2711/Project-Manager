@@ -13,6 +13,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
 import axios from "axios";
 import { useUser } from "@/providers/userProvider";
+import { useDispatch } from "react-redux";
+import { setOrganizations } from "@/redux/reducers/orgSlice";
 
 export const SignIn = () => {
   const [email, setEmail] = useState<string>("");
@@ -20,6 +22,7 @@ export const SignIn = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { setUser } = useUser();
   async function handleClick(e: React.FormEvent) {
     e.preventDefault();
@@ -38,8 +41,13 @@ export const SignIn = () => {
       );
 
       if (res.status == 201) {
-        navigate("/createorg");
         setUser(res.data.user);
+        if (res.data.user.orgs.length > 0) {
+          dispatch(setOrganizations(res.data.user.orgs));
+          navigate("/dashboard");
+        } else {
+          navigate("/createorg");
+        }
       } else {
         setError(res.data);
       }
