@@ -327,25 +327,25 @@ export const ProjectsSection = ({
           </div>
         </div>
       )}
-      {/* {activetab === "Members" && members.length === 0 && ( */}
-      {/*   <div className="flex items-center justify-center mt-10 h-[50vh]"> */}
-      {/*     <div className="flex items-center gap-10"> */}
-      {/*       <img */}
-      {/*         src="/empty.svg" */}
-      {/*         className="md:h-[300px] md:w-[300px] h-[100px] w-[100px]" */}
-      {/*       /> */}
-      {/*       <div className=" flex flex-col gap-1 max-w-[500px]"> */}
-      {/*         <p className="text-xl text-orange-500 font-semibold"> */}
-      {/*           No Members */}
-      {/*         </p> */}
-      {/*         <p className="text-[14px] md:block hidden font-semibold text-gray-400"> */}
-      {/*           You don't have any members in your organization. Please invite */}
-      {/*           members to get started. */}
-      {/*         </p> */}
-      {/*       </div> */}
-      {/*     </div> */}
-      {/*   </div> */}
-      {/* )} */}
+      {activetab === "Members" && allMembers.length === 0 && (
+        <div className="flex items-center justify-center mt-10 h-[50vh]">
+          <div className="flex items-center gap-10">
+            <img
+              src="/empty.svg"
+              className="md:h-[300px] md:w-[300px] h-[100px] w-[100px]"
+            />
+            <div className=" flex flex-col gap-1 max-w-[500px]">
+              <p className="text-xl text-orange-500 font-semibold">
+                No Members
+              </p>
+              <p className="text-[14px] md:block hidden font-semibold text-gray-400">
+                You don't have any members in your organization. Please invite
+                members to get started.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {activetab === "Members" && allMembers && allMembers?.length > 0 && (
         <div className=" mt-10">

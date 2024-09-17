@@ -66,3 +66,13 @@ export const signUpController = async (req: Request, res: Response) => {
     return res.status(500).json("Something went wrong, please try again later");
   }
 };
+
+export const Logout = (req: Request, res: Response) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json("Logged out successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Something went wrong please try again later");
+  }
+};

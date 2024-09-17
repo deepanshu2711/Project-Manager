@@ -1,6 +1,6 @@
 import { FileUp, LoaderCircle, LogOut, Plus } from "lucide-react";
 import { SiTicktick } from "react-icons/si";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Separator } from "../ui/separator";
 import { Organization, User } from "@/types";
 import {
@@ -43,7 +43,7 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
   const [error, setError] = useState("");
   const [openCreateOrg, setOpenCreateOrg] = useState<boolean>(false);
   const params = useParams();
-
+  const navigate = useNavigate();
   const handleFileClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -90,6 +90,23 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
     } finally {
       setLoading(false);
       setOpenCreateOrg(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const responce = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/api/auth/logout`,
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (responce.status === 200) {
+        return navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -228,7 +245,10 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
         <TooltipProvider delayDuration={0}>
           <Tooltip>
             <TooltipTrigger>
-              <div className="p-3 bg-gray-100 cursor-pointer border-2 border-gray-100  hover:text-white hover:bg-gray-300 rounded-full">
+              <div
+                onClick={handleLogout}
+                className="p-3 bg-gray-100 cursor-pointer border-2 border-gray-100  hover:text-white hover:bg-gray-300 rounded-full"
+              >
                 <LogOut />
               </div>
             </TooltipTrigger>
