@@ -16,10 +16,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useDispatch } from "react-redux";
 import { removeOrganization } from "@/redux/reducers/orgSlice";
+import { useUser } from "@/providers/userProvider";
 
 export const OrgDashboard = () => {
   const [emails, setEmails] = useState<string>("");
   const params = useParams();
+  const { user } = useUser();
   const [orgDetails, setOrgDetails] = useState<Organization | null>(null);
   const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -96,74 +98,80 @@ export const OrgDashboard = () => {
           className=" h-[120px] w-[120px] md:h-[200px] md:w-[200px] absolute -bottom-[60px] md:-bottom-[100px] rounded-lg left-5 border-4 boeder-gray-600"
         />
       </div>
-      <div className="md:flex hidden gap-4  items-end justify-end p-5">
-        <Dialog
-          open={openAddMembers}
-          onOpenChange={() => setOpenAddMembers(!openAddMembers)}
-        >
-          <DialogTrigger asChild>
-            <Button
-              variant={"outline"}
-              className="self-end"
-              onClick={() => setOpenAddMembers(true)}
-            >
-              Edit
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add members to your Organization</DialogTitle>
-              <DialogDescription>
-                Enter the email addresses of the members you want to add,
-                separated by commas and spaces.
-                <br />
-                <span>Example: email1@example.com, email2@example.com</span>
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleAddMembers} className="flex flex-col gap-5">
-              <Textarea
-                rows={8}
-                value={emails}
-                onChange={(e) => setEmails(e.target.value)}
-              />
-              <Button type="submit" className="uppercase w-full">
-                Add
+      {orgDetails?.userId === user?._id ? (
+        <div className="md:flex hidden gap-4  items-end justify-end p-5">
+          <Dialog
+            open={openAddMembers}
+            onOpenChange={() => setOpenAddMembers(!openAddMembers)}
+          >
+            <DialogTrigger asChild>
+              <Button
+                variant={"outline"}
+                className="self-end"
+                onClick={() => setOpenAddMembers(true)}
+              >
+                Edit
               </Button>
-            </form>
-          </DialogContent>
-        </Dialog>
-        <Dialog
-          open={openDelete}
-          onOpenChange={() => setOpenDelete(!openDelete)}
-        >
-          <DialogTrigger asChild>
-            <Button
-              variant={"destructive"}
-              className="self-end"
-              onClick={() => setOpenDelete(true)}
-            >
-              Delete
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete Organization</DialogTitle>
-              <DialogDescription>
-                This action cannot be undone. Once deleted, the organization and
-                its associated data will be permanently removed.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="flex items-center gap-4 justify-end">
-              <Button onClick={handleDeleteOrg} variant={"outline"}>
-                {deleting ? <LoaderCircle className="animate-spin" /> : "ok"}
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add members to your Organization</DialogTitle>
+                <DialogDescription>
+                  Enter the email addresses of the members you want to add,
+                  separated by commas and spaces.
+                  <br />
+                  <span>Example: email1@example.com, email2@example.com</span>
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleAddMembers} className="flex flex-col gap-5">
+                <Textarea
+                  rows={8}
+                  value={emails}
+                  onChange={(e) => setEmails(e.target.value)}
+                />
+                <Button type="submit" className="uppercase w-full">
+                  Add
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+          <Dialog
+            open={openDelete}
+            onOpenChange={() => setOpenDelete(!openDelete)}
+          >
+            <DialogTrigger asChild>
+              <Button
+                variant={"destructive"}
+                className="self-end"
+                onClick={() => setOpenDelete(true)}
+              >
+                Delete
               </Button>
-              <Button onClick={() => setOpenDelete(false)}>cancel</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete Organization</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. Once deleted, the organization
+                  and its associated data will be permanently removed.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex items-center gap-4 justify-end">
+                <Button onClick={handleDeleteOrg} variant={"outline"}>
+                  {deleting ? <LoaderCircle className="animate-spin" /> : "ok"}
+                </Button>
+                <Button onClick={() => setOpenDelete(false)}>cancel</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+      ) : (
+        <div className=" hidden md:block md:h-[80px]" />
+      )}
       <div className="md:hidden flex  items-end justify-end p-5">
-        <Button className="self-end">Edit</Button>
+        {orgDetails?.userId === user?._id && (
+          <Button className="self-end">Edit</Button>
+        )}
       </div>
       <div className="md:mt-5 p-5 max-w-4xl flex flex-col gap-1">
         <h2 className="font-bold text-3xl text-gray-700">{orgDetails?.name}</h2>

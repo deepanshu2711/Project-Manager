@@ -70,6 +70,11 @@ export const AddMembers = async (req: Request, res: Response) => {
       { $addToSet: { members: { $each: userIds } } },
     );
 
+    await User.updateMany(
+      { _id: { $in: userIds } },
+      { $addToSet: { orgs: orgId } },
+    );
+
     return res
       .status(201)
       .json(`${userIds.length} members added to Organization`);
