@@ -75,9 +75,10 @@ export const AddMembers = async (req: Request, res: Response) => {
       { $addToSet: { orgs: orgId } },
     );
 
-    return res
-      .status(201)
-      .json(`${userIds.length} members added to Organization`);
+    return res.status(201).json({
+      meaasge: `${userIds.length} members added to Organization`,
+      members: users,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Something went wrong please try again later");

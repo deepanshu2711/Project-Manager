@@ -47,12 +47,15 @@ export const ProjectsSection = ({
     "Projects",
   );
 
+  const [emails, setEmails] = useState<string>("");
   const [openAddNewProject, setOpenAddNewProject] = useState<boolean>(false);
   const [projectName, setProjectName] = useState<string>("");
   const [projectDesc, setProjectDesc] = useState<string>("");
   const [creatingProject, setCreatingProject] = useState<boolean>(false);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
   const [allMembers, setAllMembers] = useState<User[]>([]);
+  const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
+  const [addingMembers, setAddingMembers] = useState<boolean>(false);
 
   useEffect(() => {
     if (projects) {
@@ -125,6 +128,33 @@ export const ProjectsSection = ({
     }
   };
 
+  async function handleAddMembers(e: React.FormEvent) {
+    e.preventDefault();
+    const allEmails = emails.split(/[\s,;]+/).map((email) => email.trim());
+    try {
+      setAddingMembers(true);
+      const responce = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/org/addMembers`,
+        {
+          orgId: orgId,
+          members: allEmails,
+        },
+      );
+      if (responce.status === 201) {
+        console.log("Responce after adding", responce.data.members);
+        const addedMembers = responce.data.members;
+        setAllMembers((prevMembers) => [...prevMembers, ...addedMembers]);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setAddingMembers(false);
+      setOpenAddMembers(false);
+      setEmails("");
+    }
+  }
+
+  console.log("All Members", allMembers);
   return (
     <div className="mt-10 p-5 flex flex-col bg-zinc-50">
       <div className="flex flex-col items-center justify-center">
@@ -268,7 +298,50 @@ export const ProjectsSection = ({
                   <SelectItem value="Oldest">Oldest</SelectItem>
                 </SelectContent>
               </Select>
-              <Button className="border-orange-500">Add Members</Button>
+              <Dialog
+                open={openAddMembers}
+                onOpenChange={() => setOpenAddMembers(!openAddMembers)}
+              >
+                <DialogTrigger asChild>
+                  <Button
+                    variant={"default"}
+                    className="self-end"
+                    onClick={() => setOpenAddMembers(true)}
+                  >
+                    Add Members
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add members to your Organization</DialogTitle>
+                    <DialogDescription>
+                      Enter the email addresses of the members you want to add,
+                      separated by commas and spaces.
+                      <br />
+                      <span>
+                        Example: email1@example.com, email2@example.com
+                      </span>
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form
+                    onSubmit={handleAddMembers}
+                    className="flex flex-col gap-5"
+                  >
+                    <Textarea
+                      rows={8}
+                      value={emails}
+                      onChange={(e) => setEmails(e.target.value)}
+                    />
+                    <Button type="submit" className="uppercase w-full">
+                      {addingMembers ? (
+                        <LoaderCircle className="animate-spin" />
+                      ) : (
+                        "Add"
+                      )}
+                    </Button>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="flex md:hidden flex-col gap-4">
               <p className="text-xl text-gray-600 font-semibold">
@@ -364,7 +437,7 @@ export const ProjectsSection = ({
             </TableHeader>
             <TableBody>
               {allMembers.map((member, idx) => (
-                <TableRow>
+                <TableRow key={idx}>
                   <TableCell className="font-medium">{idx + 1}</TableCell>
                   <TableCell className="font-medium">
                     <Avatar>

@@ -13,17 +13,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { useDispatch, useSelector } from "react-redux";
 import { removeOrganization } from "@/redux/reducers/orgSlice";
 import { RootState } from "@/redux/store";
 
 export const OrgDashboard = () => {
-  const [emails, setEmails] = useState<string>("");
   const params = useParams();
   const user = useSelector((state: RootState) => state.user.user);
   const [orgDetails, setOrgDetails] = useState<Organization | null>(null);
-  const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
+  const [openEdit, setOpenEdit] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [orgId, setOrgId] = useState<string>("");
@@ -47,25 +45,6 @@ export const OrgDashboard = () => {
       setOrgId(params.orgId);
     }
   }, [params.orgId]);
-
-  async function handleAddMembers(e: React.FormEvent) {
-    e.preventDefault();
-    const allEmails = emails.split(/[\s,;]+/).map((email) => email.trim());
-    try {
-      const responce = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/org/addMembers`,
-        {
-          orgId: params.orgId,
-          members: allEmails,
-        },
-      );
-      if (responce.status === 200) {
-        console.log(responce.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const handleDeleteOrg = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,15 +79,12 @@ export const OrgDashboard = () => {
       </div>
       {orgDetails?.userId === user?._id ? (
         <div className="md:flex hidden gap-4  items-end justify-end p-5">
-          <Dialog
-            open={openAddMembers}
-            onOpenChange={() => setOpenAddMembers(!openAddMembers)}
-          >
+          <Dialog open={openEdit} onOpenChange={() => setOpenEdit(!openEdit)}>
             <DialogTrigger asChild>
               <Button
                 variant={"outline"}
                 className="self-end"
-                onClick={() => setOpenAddMembers(true)}
+                onClick={() => setOpenEdit(true)}
               >
                 Edit
               </Button>
@@ -123,16 +99,6 @@ export const OrgDashboard = () => {
                   <span>Example: email1@example.com, email2@example.com</span>
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleAddMembers} className="flex flex-col gap-5">
-                <Textarea
-                  rows={8}
-                  value={emails}
-                  onChange={(e) => setEmails(e.target.value)}
-                />
-                <Button type="submit" className="uppercase w-full">
-                  Add
-                </Button>
-              </form>
             </DialogContent>
           </Dialog>
           <Dialog
