@@ -1,9 +1,10 @@
-import { useUser } from "@/providers/userProvider";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export const LandingMain = () => {
-  const { user } = useUser();
+  const user = useSelector((state: RootState) => state.user.user);
   const navigate = useNavigate();
   const handleClick = () => {
     if (user !== null) {

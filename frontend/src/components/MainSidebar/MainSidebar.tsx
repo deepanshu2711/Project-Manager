@@ -30,6 +30,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { addOrganization } from "@/redux/reducers/orgSlice";
+import { clearUser } from "@/redux/reducers/userSlice";
 interface MainSidebarProps {
   userOrgs: Organization[] | null;
   user: User | null;
@@ -107,6 +108,7 @@ export const MainSidebar = ({ userOrgs, user }: MainSidebarProps) => {
       );
 
       if (responce.status === 200) {
+        dispatch(clearUser());
         return navigate("/");
       }
     } catch (error) {

@@ -12,9 +12,9 @@ import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
 import { LoaderCircle } from "lucide-react";
 import axios from "axios";
-import { useUser } from "@/providers/userProvider";
 import { useDispatch } from "react-redux";
 import { setOrganizations } from "@/redux/reducers/orgSlice";
+import { setUser } from "@/redux/reducers/userSlice";
 
 export const SignIn = () => {
   const [email, setEmail] = useState<string>("");
@@ -23,7 +23,6 @@ export const SignIn = () => {
   const [error, setError] = useState<string>("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { setUser } = useUser();
   async function handleClick(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -41,7 +40,7 @@ export const SignIn = () => {
       );
 
       if (res.status == 201) {
-        setUser(res.data.user);
+        dispatch(setUser(res.data.user));
         if (res.data.user.orgs.length > 0) {
           dispatch(setOrganizations(res.data.user.orgs));
           navigate("/dashboard");

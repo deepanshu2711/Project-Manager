@@ -8,13 +8,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useUser } from "@/providers/userProvider";
 import { addOrganization } from "@/redux/reducers/orgSlice";
+import { RootState } from "@/redux/store";
 import { handleImageUpload } from "@/util/uploadImage";
 import axios from "axios";
 import { FileUp, LoaderCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 export const CreateOrg = () => {
@@ -27,7 +27,7 @@ export const CreateOrg = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useUser();
+  const user = useSelector((state: RootState) => state.user.user);
 
   useEffect(() => {
     if ((user?.orgs.length as number) > 0) {

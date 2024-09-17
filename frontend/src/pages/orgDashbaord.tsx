@@ -14,14 +14,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeOrganization } from "@/redux/reducers/orgSlice";
-import { useUser } from "@/providers/userProvider";
+import { RootState } from "@/redux/store";
 
 export const OrgDashboard = () => {
   const [emails, setEmails] = useState<string>("");
   const params = useParams();
-  const { user } = useUser();
+  const user = useSelector((state: RootState) => state.user.user);
   const [orgDetails, setOrgDetails] = useState<Organization | null>(null);
   const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
