@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/auth", verifyToken, authRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/org", verifyToken, orgRouter);
 app.use("/api/project", verifyToken, projectRouter);
 
