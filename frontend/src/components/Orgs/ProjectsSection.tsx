@@ -8,7 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { ProjectCard } from "./ProjectCard";
 import { useEffect, useState } from "react";
-import { Project, User } from "@/types";
+import { Organization, Project, User } from "@/types";
 import {
   Dialog,
   DialogContent,
@@ -36,12 +36,16 @@ interface ProjectsSectionProps {
   orgId: string;
   projects: Project[] | undefined;
   members: User[] | undefined;
+  user: User | null;
+  orgDetails: Organization | null;
 }
 
 export const ProjectsSection = ({
   orgId,
   projects,
   members,
+  user,
+  orgDetails,
 }: ProjectsSectionProps) => {
   const [activetab, setActivetab] = useState<"Projects" | "Members">(
     "Projects",
@@ -112,19 +116,23 @@ export const ProjectsSection = ({
   }
 
   const handleRemoveMember = async (memberId: string) => {
-    try {
-      const responce = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/api/org/removeMember?orgId=${orgId}&memberId=${memberId}`,
-      );
-
-      if (responce.status === 200) {
-        const filteredMembers = allMembers.filter(
-          (member) => member._id !== memberId,
+    if (orgDetails?.userId === user?._id) {
+      try {
+        const responce = await axios.delete(
+          `${import.meta.env.VITE_BASE_URL}/api/org/removeMember?orgId=${orgId}&memberId=${memberId}`,
         );
-        setAllMembers(filteredMembers);
+
+        if (responce.status === 200) {
+          const filteredMembers = allMembers.filter(
+            (member) => member._id !== memberId,
+          );
+          setAllMembers(filteredMembers);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
+    } else {
+      window.alert("You don't have permission to perform this action");
     }
   };
 
@@ -207,52 +215,54 @@ export const ProjectsSection = ({
                   <SelectItem value="Oldest">Oldest</SelectItem>
                 </SelectContent>
               </Select>
-              <Dialog
-                open={openAddNewProject}
-                onOpenChange={() => setOpenAddNewProject(!openAddNewProject)}
-              >
-                <DialogTrigger asChild>
-                  <Button
-                    variant={"default"}
-                    className="self-end"
-                    onClick={() => setOpenAddNewProject(true)}
-                  >
-                    Add New Project
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add Project</DialogTitle>
-                    <DialogDescription>
-                      Add a new project in your organization.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form
-                    onSubmit={handleCreateProject}
-                    className="flex flex-col gap-4"
-                  >
-                    <Input
-                      value={projectName}
-                      onChange={(e) => setProjectName(e.target.value)}
-                      type="text"
-                      placeholder="Name"
-                    />
-                    <Textarea
-                      value={projectDesc}
-                      onChange={(e) => setProjectDesc(e.target.value)}
-                      placeholder="Short description"
-                      rows={5}
-                    />
-                    <Button type="submit" className="uppercase">
-                      {creatingProject ? (
-                        <LoaderCircle className="animate-spin" />
-                      ) : (
-                        "Create"
-                      )}
+              {orgDetails?.userId === user?._id && (
+                <Dialog
+                  open={openAddNewProject}
+                  onOpenChange={() => setOpenAddNewProject(!openAddNewProject)}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={"default"}
+                      className="self-end"
+                      onClick={() => setOpenAddNewProject(true)}
+                    >
+                      Add New Project
                     </Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Project</DialogTitle>
+                      <DialogDescription>
+                        Add a new project in your organization.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form
+                      onSubmit={handleCreateProject}
+                      className="flex flex-col gap-4"
+                    >
+                      <Input
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        type="text"
+                        placeholder="Name"
+                      />
+                      <Textarea
+                        value={projectDesc}
+                        onChange={(e) => setProjectDesc(e.target.value)}
+                        placeholder="Short description"
+                        rows={5}
+                      />
+                      <Button type="submit" className="uppercase">
+                        {creatingProject ? (
+                          <LoaderCircle className="animate-spin" />
+                        ) : (
+                          "Create"
+                        )}
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
             <div className="flex md:hidden flex-col gap-4">
               <p className="text-xl text-gray-600 font-semibold">
@@ -298,50 +308,53 @@ export const ProjectsSection = ({
                   <SelectItem value="Oldest">Oldest</SelectItem>
                 </SelectContent>
               </Select>
-              <Dialog
-                open={openAddMembers}
-                onOpenChange={() => setOpenAddMembers(!openAddMembers)}
-              >
-                <DialogTrigger asChild>
-                  <Button
-                    variant={"default"}
-                    className="self-end"
-                    onClick={() => setOpenAddMembers(true)}
-                  >
-                    Add Members
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add members to your Organization</DialogTitle>
-                    <DialogDescription>
-                      Enter the email addresses of the members you want to add,
-                      separated by commas and spaces.
-                      <br />
-                      <span>
-                        Example: email1@example.com, email2@example.com
-                      </span>
-                    </DialogDescription>
-                  </DialogHeader>
-                  <form
-                    onSubmit={handleAddMembers}
-                    className="flex flex-col gap-5"
-                  >
-                    <Textarea
-                      rows={8}
-                      value={emails}
-                      onChange={(e) => setEmails(e.target.value)}
-                    />
-                    <Button type="submit" className="uppercase w-full">
-                      {addingMembers ? (
-                        <LoaderCircle className="animate-spin" />
-                      ) : (
-                        "Add"
-                      )}
+              {orgDetails?.userId === user?._id && (
+                <Dialog
+                  open={openAddMembers}
+                  onOpenChange={() => setOpenAddMembers(!openAddMembers)}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={"default"}
+                      onClick={() => setOpenAddMembers(true)}
+                    >
+                      Add Members
                     </Button>
-                  </form>
-                </DialogContent>
-              </Dialog>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>
+                        Add members to your Organization
+                      </DialogTitle>
+                      <DialogDescription>
+                        Enter the email addresses of the members you want to
+                        add, separated by commas and spaces.
+                        <br />
+                        <span>
+                          Example: email1@example.com, email2@example.com
+                        </span>
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form
+                      onSubmit={handleAddMembers}
+                      className="flex flex-col gap-5"
+                    >
+                      <Textarea
+                        rows={8}
+                        value={emails}
+                        onChange={(e) => setEmails(e.target.value)}
+                      />
+                      <Button type="submit" className="uppercase w-full">
+                        {addingMembers ? (
+                          <LoaderCircle className="animate-spin" />
+                        ) : (
+                          "Add"
+                        )}
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
             <div className="flex md:hidden flex-col gap-4">
               <p className="text-xl text-gray-600 font-semibold">
@@ -383,7 +396,7 @@ export const ProjectsSection = ({
         )}
       </div>
 
-      {activetab === "Projects" && projects?.length === 0 && (
+      {activetab === "Projects" && allProjects?.length === 0 && (
         <div className="flex items-center justify-center mt-10 h-[50vh]">
           <div className="flex items-center gap-10">
             <img

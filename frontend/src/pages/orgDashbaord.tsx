@@ -297,6 +297,8 @@ export const OrgDashboard = () => {
         </div>
       </div>
       <ProjectsSection
+        orgDetails={orgDetails}
+        user={user}
         members={orgDetails?.members}
         orgId={orgId}
         projects={orgDetails?.projects}

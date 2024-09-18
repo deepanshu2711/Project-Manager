@@ -92,7 +92,7 @@ export const ProjectCard = ({
             <TooltipProvider delayDuration={0}>
               <Tooltip>
                 <TooltipTrigger>
-                  <div className="">
+                  <div className="mt-8">
                     <Info className=" text-gray-400 h-10 w-10 hover:text-orange-500" />
                   </div>
                 </TooltipTrigger>
