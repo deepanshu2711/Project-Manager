@@ -42,7 +42,12 @@ export const ProjectCard = ({
             <div className="flex items-center gap-4">
               <FolderRoot className="text-orange-500" />
               <div>
-                <p className="text-xl font-bold text-gray-600">{name}</p>
+                <Link
+                  to={`${orgId}/project/${projectId}`}
+                  className="text-xl hover:text-orange-500 cursor-pointer font-bold text-gray-600"
+                >
+                  {name}
+                </Link>
                 <p className="text-gray-400 font-semibold text-[14px]">
                   33 Members
                 </p>

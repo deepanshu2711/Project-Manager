@@ -60,6 +60,12 @@ export const ProjectsSection = ({
   const [allMembers, setAllMembers] = useState<User[]>([]);
   const [openAddMembers, setOpenAddMembers] = useState<boolean>(false);
   const [addingMembers, setAddingMembers] = useState<boolean>(false);
+  const [filter, setFilter] = useState<"A-Z" | "Z-A" | "Newest" | "Oldest">(
+    "A-Z",
+  );
+  const [memberFilter, setMemberFilter] = useState<
+    "A-Z" | "Z-A" | "Newest" | "Oldest"
+  >("A-Z");
 
   useEffect(() => {
     if (projects) {
@@ -81,6 +87,9 @@ export const ProjectsSection = ({
           name: projectName,
           description: projectDesc,
           orgId,
+        },
+        {
+          withCredentials: true,
         },
       );
 
@@ -162,7 +171,36 @@ export const ProjectsSection = ({
     }
   }
 
-  console.log("All Members", allMembers);
+  useEffect(() => {
+    const sortedData = [...allProjects];
+    if (filter === "Z-A") {
+      sortedData.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (filter === "A-Z") {
+      sortedData.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (filter === "Newest") {
+      sortedData.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+    } else if (filter === "Oldest") {
+      sortedData.sort(
+        (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      );
+    }
+    setAllProjects(sortedData);
+  }, [filter]);
+
+  useEffect(() => {
+    const sortedData = [...allMembers];
+    if (filter === "Z-A") {
+      sortedData.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (filter === "A-Z") {
+      sortedData.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    setAllMembers(sortedData);
+  }, [filter]);
+
   return (
     <div className="mt-10 p-5 flex flex-col bg-zinc-50">
       <div className="flex flex-col items-center justify-center">
@@ -204,7 +242,12 @@ export const ProjectsSection = ({
               <p className="text-3xl text-gray-600 font-semibold mr-[2px]">
                 All <span className="text-orange-500">Projects</span>
               </p>
-              <Select>
+              <Select
+                value={filter}
+                onValueChange={(value) =>
+                  setFilter(value as "A-Z" | "Z-A" | "Newest" | "Oldest")
+                }
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
@@ -297,15 +340,18 @@ export const ProjectsSection = ({
               <p className="text-3xl text-gray-600 font-semibold">
                 All <span className="text-orange-500">Members</span>
               </p>
-              <Select>
+              <Select
+                value={memberFilter}
+                onValueChange={(value) =>
+                  setMemberFilter(value as "A-Z" | "Z-A" | "Newest" | "Oldest")
+                }
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="A-Z">Order A-Z</SelectItem>
                   <SelectItem value="Z-A">Order Z-A</SelectItem>
-                  <SelectItem value="Newest">Newest</SelectItem>
-                  <SelectItem value="Oldest">Oldest</SelectItem>
                 </SelectContent>
               </Select>
               {orgDetails?.userId === user?._id && (
