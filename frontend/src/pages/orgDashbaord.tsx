@@ -48,6 +48,9 @@ export const OrgDashboard = () => {
     const fetchOrgdetails = async () => {
       const responce = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/org/${params.orgId}`,
+        {
+          withCredentials: true,
+        },
       );
       if (responce.status === 200) {
         setOrgDetails(responce.data);
