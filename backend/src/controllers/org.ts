@@ -139,3 +139,23 @@ export const leaveOrg = async (req: Request, res: Response) => {
     res.status(500).json("Something went wrong please try again later");
   }
 };
+
+export const EditOrg = async (req: Request, res: Response) => {
+  const { name, description, imageUrl, orgId } = req.body;
+
+  try {
+    await Organization.findOneAndUpdate(
+      { _id: orgId },
+      {
+        name,
+        description,
+        imageUrl,
+      },
+    );
+
+    return res.status(200).json("Org details updated");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Something went wrong please try again later");
+  }
+};

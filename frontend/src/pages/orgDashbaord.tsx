@@ -2,8 +2,8 @@ import { ProjectsSection } from "@/components/Orgs/ProjectsSection";
 import { Button } from "@/components/ui/button";
 import { Organization } from "@/types";
 import axios from "axios";
-import { Dot, LoaderCircle } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Dot, LoaderCircle, Pencil } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Dialog,
@@ -16,6 +16,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { removeOrganization } from "@/redux/reducers/orgSlice";
 import { RootState } from "@/redux/store";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { handleImageUpload } from "@/util/uploadImage";
 
 export const OrgDashboard = () => {
   const params = useParams();
@@ -27,6 +30,20 @@ export const OrgDashboard = () => {
   const [orgId, setOrgId] = useState<string>("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [name, setname] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [editing, setEditing] = useState<boolean>(false);
+  useEffect(() => {
+    if (orgDetails) {
+      setImageUrl(orgDetails?.imageUrl);
+      setname(orgDetails.name);
+      setDescription(orgDetails.description);
+    }
+  }, [orgDetails?.imageUrl, orgDetails]);
+
   useEffect(() => {
     const fetchOrgdetails = async () => {
       const responce = await axios.get(
@@ -81,6 +98,55 @@ export const OrgDashboard = () => {
     }
   };
 
+  const handleEditImageClick = () => {
+    if (inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const SelectedFile = e.target.files?.[0];
+    if (SelectedFile) {
+      setUploading(true);
+      const result = await handleImageUpload(SelectedFile);
+      if (result.success) {
+        setImageUrl(result.downloadUrl as string);
+      }
+      setUploading(false);
+    }
+  };
+
+  const handleEdit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditing(true);
+    try {
+      const responce = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/api/org/edit`,
+        {
+          name,
+          description,
+          imageUrl,
+          orgId,
+        },
+      );
+
+      if (responce.status === 200) {
+        console.log(status);
+        setOrgDetails({
+          ...(orgDetails as Organization),
+          name: name,
+          description: description,
+          imageUrl: imageUrl,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setOpenEdit(false);
+      setEditing(false);
+    }
+  };
+
   return (
     <div className="flex flex-col ">
       <div className="relative -z-10">
@@ -108,13 +174,60 @@ export const OrgDashboard = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add members to your Organization</DialogTitle>
+                <DialogTitle>Edit</DialogTitle>
                 <DialogDescription>
-                  Enter the email addresses of the members you want to add,
-                  separated by commas and spaces.
-                  <br />
-                  <span>Example: email1@example.com, email2@example.com</span>
+                  Edit the organization details such as Name, Description, Image
+                  etc.
                 </DialogDescription>
+                <form
+                  onSubmit={handleEdit}
+                  className="flex flex-col gap-5 items-center"
+                >
+                  <Input
+                    ref={inputRef}
+                    onChange={handleFileChange}
+                    type="file"
+                    className="hidden"
+                  />
+                  <div
+                    onClick={handleEditImageClick}
+                    className="relative group cursor-pointer"
+                  >
+                    {uploading ? (
+                      <LoaderCircle className="animate-spin m-[80px]" />
+                    ) : (
+                      <div>
+                        <img
+                          src={imageUrl}
+                          className="h-[150px] w-[150px] rounded-lg mt-5"
+                        />
+                        <div className="absolute hidden group-hover:block top-0 bottom-0 left-0 right-0 bg-black rounded-lg opacity-50 mt-5" />
+                        <div className="absolute hidden group-hover:block top-[40%] p-2 border-2 rounded-full  left-[30%] border-white">
+                          <Pencil className="h-10 w-10 text-white" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <Input
+                    value={name}
+                    onChange={(e) => setname(e.target.value)}
+                    type="text"
+                    placeholder="Name"
+                  />
+                  <Textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Description"
+                    rows={5}
+                  />
+                  <Button type="submit" className="w-full uppercase">
+                    {editing ? (
+                      <LoaderCircle className="animate-spin" />
+                    ) : (
+                      "Update"
+                    )}
+                  </Button>
+                </form>
               </DialogHeader>
             </DialogContent>
           </Dialog>
