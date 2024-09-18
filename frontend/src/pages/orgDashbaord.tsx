@@ -64,6 +64,23 @@ export const OrgDashboard = () => {
     }
   };
 
+  const handleLeaveOrg = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const responce = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/api/org/leave?orgId=${orgId}&userId=${user?._id}`,
+      );
+
+      if (responce.status === 200) {
+        console.log(responce.data);
+        dispatch(removeOrganization(orgId));
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col ">
       <div className="relative -z-10">
@@ -132,7 +149,11 @@ export const OrgDashboard = () => {
           </Dialog>
         </div>
       ) : (
-        <div className=" hidden md:block md:h-[80px]" />
+        <div className="md:h-[80px] justify-end flex p-5">
+          <Button onClick={handleLeaveOrg} variant={"destructive"}>
+            Leave
+          </Button>
+        </div>
       )}
       <div className="md:hidden flex  items-end justify-end p-5">
         {orgDetails?.userId === user?._id && (

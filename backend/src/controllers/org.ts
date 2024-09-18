@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Organization } from "../models/org";
 import { User } from "../models/user";
 import { Project } from "../models/project";
+import { moveEmitHelpers } from "typescript";
 
 export const createOrg = async (req: Request, res: Response) => {
   const { name, description, imageUrl, userId } = req.body;
@@ -94,6 +95,7 @@ export const removeMember = async (req: Request, res: Response) => {
         $pull: { members: memberId },
       },
     );
+    await User.findOneAndUpdate({ _id: memberId }, { $pull: { orgs: orgId } });
     res.status(200).json("Member removed successfully");
   } catch (error) {
     console.log(error);
@@ -113,6 +115,25 @@ export const deleteOrg = async (req: Request, res: Response) => {
     await Project.deleteMany({ org: orgId });
 
     res.status(200).json("Org deleted successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Something went wrong please try again later");
+  }
+};
+
+export const leaveOrg = async (req: Request, res: Response) => {
+  const { userId, orgId } = req.query;
+  console.log(userId, orgId);
+
+  try {
+    await Organization.findOneAndUpdate(
+      { _id: orgId },
+      { $pull: { members: userId } },
+    );
+
+    await User.findOneAndUpdate({ _id: userId }, { $pull: { orgs: orgId } });
+
+    res.status(200).json("Org left successfully");
   } catch (error) {
     console.log(error);
     res.status(500).json("Something went wrong please try again later");
