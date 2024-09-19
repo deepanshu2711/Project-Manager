@@ -36,14 +36,16 @@ export const signInController = async (req: Request, res: Response) => {
 
 export const signUpController = async (req: Request, res: Response) => {
   const { email, password, name, avatar } = req.body;
-  console.log(email, password, name, avatar);
+  console.log("Received data:", email, password, name, avatar);
 
   if (!email || !password || !name || !avatar) {
+    console.log("Required fields are missing");
     return res.status(200).json("Please enter all required fields");
   }
 
   try {
     const existingUser = await User.findOne({ email });
+    console.log("Existing user check:", existingUser);
     if (existingUser) {
       return res.status(200).json("A user already exists with this email!");
     }
@@ -55,6 +57,7 @@ export const signUpController = async (req: Request, res: Response) => {
       name,
       avatar,
     });
+    console.log("User created:", user);
 
     if (!user) {
       return res.status(500).json("Something went wrong");
@@ -62,7 +65,7 @@ export const signUpController = async (req: Request, res: Response) => {
 
     return res.status(201).json({ message: "Sign up successfully!" });
   } catch (error) {
-    console.error(error);
+    console.error("Error:", error);
     return res.status(500).json("Something went wrong, please try again later");
   }
 };
