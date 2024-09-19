@@ -26,7 +26,3 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/org", verifyToken, orgRouter);
 app.use("/api/project", verifyToken, projectRouter);
-
-app.listen(8080, () => {
-  console.log("server runnig on port 8080");
-});
