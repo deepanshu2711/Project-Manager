@@ -11,7 +11,7 @@ dotenv.config();
 
 MongoDb();
 
-const app = express();
+export const app = express();
 
 app.use(
   cors({
