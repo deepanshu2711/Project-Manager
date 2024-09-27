@@ -3,13 +3,10 @@ import { authRouter } from "./routes/user";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import { MongoDb } from "./db";
 import { orgRouter } from "./routes/org";
 import { projectRouter } from "./routes/project";
 import { verifyToken } from "./middlewares/checktoken";
 dotenv.config();
-
-MongoDb();
 
 export const app = express();
 
